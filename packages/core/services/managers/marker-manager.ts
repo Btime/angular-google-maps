@@ -1,4 +1,4 @@
-import {Injectable, NgZone} from '@angular/core';
+import {Injectable, NgZone, Optional, SkipSelf} from '@angular/core';
 import {Observable, Observer} from 'rxjs';
 
 import {AgmMarker} from './../../directives/marker';
@@ -13,7 +13,7 @@ export class MarkerManager {
   protected _markers: Map<AgmMarker, Promise<Marker>> =
       new Map<AgmMarker, Promise<Marker>>();
 
-  constructor(protected _mapsWrapper: GoogleMapsAPIWrapper, protected _zone: NgZone) {}
+  constructor(protected _mapsWrapper: GoogleMapsAPIWrapper, protected _zone: NgZone, @Optional() @SkipSelf() protected _markerManager: MarkerManager) {}
 
   deleteMarker(marker: AgmMarker): Promise<void> {
     const m = this._markers.get(marker);
@@ -22,11 +22,13 @@ export class MarkerManager {
       return Promise.resolve();
     }
     return m.then((m: Marker) => {
-      return this._zone.run(() => {
-        m.setMap(null);
-        this._markers.delete(marker);
-      });
+      m.setMap(null);
+      this._markers.delete(marker);
     });
+  }
+
+  deleteMarkers(markers: AgmMarker[]): Promise<void> {
+    return Promise.all(markers.map(marker => this.deleteMarker(marker))).then(() => {});
   }
 
   updateMarkerPosition(marker: AgmMarker): Promise<void> {
@@ -76,7 +78,7 @@ export class MarkerManager {
     });
   }
 
-  addMarker(marker: AgmMarker) {
+  addMarker(marker: AgmMarker, addToMap: boolean = true): void {
     const markerPromise = this._mapsWrapper.createMarker({
       position: {lat: marker.latitude, lng: marker.longitude},
       label: marker.label,
@@ -88,7 +90,7 @@ export class MarkerManager {
       title: marker.title,
       clickable: marker.clickable,
       animation: (typeof marker.animation === 'string') ? google.maps.Animation[marker.animation] : marker.animation
-    });
+    }, addToMap);
 
     this._markers.set(marker, markerPromise);
   }

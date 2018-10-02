@@ -43,7 +43,7 @@ describe('MarkerManager', () => {
                title: undefined,
                clickable: true,
                animation: undefined
-             });
+             }, true);
            }));
   });
 
@@ -96,7 +96,7 @@ describe('MarkerManager', () => {
                title: undefined,
                clickable: true,
                animation: undefined
-             });
+             }, true);
              const iconUrl = 'http://angular-maps.com/icon.png';
              newMarker.iconUrl = iconUrl;
              return markerManager.updateIcon(newMarker).then(
@@ -134,7 +134,7 @@ describe('MarkerManager', () => {
                title: undefined,
                clickable: true,
                animation: undefined
-             });
+             }, true);
              const opacity = 0.4;
              newMarker.opacity = opacity;
              return markerManager.updateOpacity(newMarker).then(
@@ -171,7 +171,7 @@ describe('MarkerManager', () => {
                title: undefined,
                clickable: true,
                animation: undefined
-             });
+             }, true);
              newMarker.visible = true;
              return markerManager.updateVisible(newMarker).then(
                  () => { expect(markerInstance.setVisible).toHaveBeenCalledWith(true); });
@@ -207,7 +207,7 @@ describe('MarkerManager', () => {
                title: undefined,
                clickable: true,
                animation: undefined
-             });
+             }, true);
              const zIndex = 10;
              newMarker.zIndex = zIndex;
              return markerManager.updateZIndex(newMarker).then(

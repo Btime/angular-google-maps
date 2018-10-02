@@ -1,0 +1,6 @@
+{
+  "name": "@agm/spiderfier-src",
+  "dependencies": {
+    "@agm/core": "file:../core"
+  }
+}
